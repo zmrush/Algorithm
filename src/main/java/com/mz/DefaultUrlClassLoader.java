@@ -1,6 +1,6 @@
 package com.mz;
 
-import com.creditease.toumi.SortInterface;
+//import com.creditease.toumi.SortInterface;
 import com.sun.corba.se.impl.io.InputStreamHook;
 import com.sun.corba.se.spi.orbutil.fsm.Input;
 
