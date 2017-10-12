@@ -20,11 +20,11 @@ public class SimpleFraction {
             N=N*10;
             while(N<D){
                 result.append("0");
-                if(index[N]!=0){
+                if(index[N]!=0){ // 10 / 27 let me think it is important
                     isFind=true;
                     break;
                 }
-                index[N]=result.length();
+                index[N]=result.length();  // 3 / 90 let me think is is important
                 N=N*10;
             }
             if(isFind==true)
