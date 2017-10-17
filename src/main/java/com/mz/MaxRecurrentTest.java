@@ -45,6 +45,60 @@ public class MaxRecurrentTest {
         }
         return s.substring(maxIndex-maxLength+1,maxIndex+1);
     }
+
+    //well,we use manamatch algorithm
+    public static String getMaxRecurrentText2(String s){
+        StringBuilder sb=new StringBuilder(s.length()*2+1);
+        sb.append("#");
+        for(int i=0;i<s.length();i++){
+            sb.append(s.charAt(i));
+            sb.append("#");
+        }
+        int[] p=new int[sb.length()];
+        p[0]=0;
+        int R=0;
+        int center=0;
+        int maxR=0;
+        int maxRIndex=0;
+        for(int i=1;i<sb.length();i++){
+            if(i>R){
+                center=i;
+                int count=0;
+                while((i-count-1)>=0  && (i+count+1)<sb.length() && sb.charAt(i+count+1)==sb.charAt(i-count-1))
+                    count++;
+                R=i+count;
+                p[i]=count;
+                if(p[i]>maxR) {
+                    maxR = p[i];
+                    maxRIndex=i;
+                }
+            }else{
+                if((p[2*center-i]+(i-center))<(R-center)){
+                    p[i]=p[2*center-i];
+                }else if((p[2*center-i]+(i-center))==(R-center)){
+                    int count=0;
+                    while((2*i-R-count-1)>=0 && (R+count+1)<sb.length() &&sb.charAt(2*i-R-count-1)==sb.charAt(R+count+1)){
+                        count++;
+                    }
+                    center=i;
+                    R=R+count;
+                    p[i]=R-i;
+                    if(p[i]>maxR) {
+                        maxR = p[i];
+                        maxRIndex=i;
+                    }
+                }else{
+                    p[i]=R-i;
+                }
+            }
+
+        }
+        StringBuilder result=new StringBuilder(maxR);
+        for(int i=maxRIndex-maxR+1;i<maxRIndex+maxR;i=i+2){
+            result.append(sb.charAt(i));
+        }
+        return result.toString();
+    }
     public static void main(String[] args){
         BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
         Integer caseNum=0;
@@ -59,7 +113,7 @@ public class MaxRecurrentTest {
         try {
             while (i < caseNum) {
                 s = br.readLine();
-                results.add(getMaxRecurrentText(s));
+                results.add(getMaxRecurrentText2(s));
                 i++;
             }
         }catch (Exception e){
