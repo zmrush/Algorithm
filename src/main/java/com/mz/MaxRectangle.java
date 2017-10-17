@@ -56,6 +56,7 @@ public class MaxRectangle {
             return maxSumSubmatrix(matrixt,k);
         }
     }
+    //别人的算法复杂度
     public static int maxSumSubmatrix3(int[][] matrix,int k){
         if (matrix.length == 0) return 0;
         int row = matrix.length;
@@ -91,6 +92,7 @@ public class MaxRectangle {
         }
         return max;
     }
+    //使用下面这种算法，时间复杂度降为O(n^3*logn),并且使用一些简单的技巧（计算目前为止的最大值，如果都是小鱼目标值，就没有必要进行后面的计算，从而将复杂度进一步地降低），最终在leetcode上的时间复杂度降为31ms，基本是最低的了
     public static int maxSumSubmatrix2(int[][] matrix, int k) {
         int height=matrix.length;
         int width=matrix[0].length;
