@@ -2,6 +2,7 @@ package com.mz;
 
 import jdk.nashorn.internal.ir.LexicalContextNode;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.nio.ByteBuffer;
@@ -65,6 +66,11 @@ public class SocketNIO implements Runnable{
         SelectionKey selectionKey;
         ByteBuffer readBuffer= ByteBuffer.allocate(1024);
         ByteBuffer writeBuffer=ByteBuffer.allocate(1024);
+        static final int READ=0,WRITE=1;
+        void process(){
+
+        }
+        int state=READ;
         public Handler(SocketChannel socketChannel,Selector selector) throws Exception{
             this.socketChannel=socketChannel;
             selectionKey=socketChannel.register(selector,0);
@@ -73,7 +79,33 @@ public class SocketNIO implements Runnable{
             selector.wakeup();
         }
         public void run() {
+            if(state==READ)
+                read();
+            else if(state==WRITE)
+                write();
+        }
+        public void read(){
+            try {
+                int bytes=socketChannel.read(readBuffer);
+                if(bytes>0){//读取完毕
+                    process();
+                    state=WRITE;
+                    selectionKey.interestOps(SelectionKey.OP_WRITE);
 
+                }
+            }catch (IOException e){
+
+            }
+
+        }
+        public void write(){
+            try {
+                int bytes = socketChannel.write(writeBuffer);
+                if (bytes > 0)//写完毕
+                    selectionKey.cancel();
+            }catch (IOException e){
+
+            }
         }
     }
 }
