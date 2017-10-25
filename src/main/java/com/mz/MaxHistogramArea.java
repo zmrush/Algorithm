@@ -14,7 +14,7 @@ public class MaxHistogramArea {
     public static int computeMaxArea(Component[] components){
         Stack<Component> stack=new Stack<Component>();
         int maxArea=0;
-        for(int i=0;i<components.length-1;i++){
+        for(int i=0;i<components.length;i++){
             if(stack.isEmpty())
                 stack.push(components[i]);
             else{
@@ -24,12 +24,31 @@ public class MaxHistogramArea {
                 }else{
                     while(tmp.value>components[i].value && !stack.isEmpty()){
                         stack.pop();
+                        int areaTmp=tmp.value;
                         if(!stack.isEmpty()){
-
+                            tmp=stack.peek();
+                            areaTmp=areaTmp*(i-tmp.cursor-1);
+                        }else{
+                            areaTmp=areaTmp*(i);
                         }
+                        if(areaTmp>maxArea)
+                            maxArea=areaTmp;
                     }
+                    stack.push(components[i]);
                 }
             }
+        }
+        while(!stack.isEmpty()){
+            Component tmp=stack.pop();
+            int areaTmp=tmp.value;
+            if(!stack.isEmpty()){
+                tmp=stack.peek();
+                areaTmp=areaTmp*(components.length-tmp.cursor-1);
+            }else{
+                areaTmp=areaTmp*(components.length);
+            }
+            if(areaTmp>maxArea)
+                maxArea=areaTmp;
         }
         return maxArea;
 
@@ -46,7 +65,10 @@ public class MaxHistogramArea {
                 components[j].value=scanner.nextInt();
                 components[j].cursor=j;
             }
-
+            result[i]=computeMaxArea(components);
+        }
+        for(int i=0;i<numCase;i++){
+            System.out.println(result[i]);
         }
 
     }
