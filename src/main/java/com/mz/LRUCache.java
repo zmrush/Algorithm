@@ -22,6 +22,8 @@ public class LRUCache {
     private int capacity;
     private ConcurrentHashMap<String,Node> hashMap=new ConcurrentHashMap<String,Node>();
     public LRUCache(int capacity){
+        if(capacity<=0)
+            throw new IllegalArgumentException("capacity must be greater than zero!");
         this.capacity=capacity;
     }
     public void put(String key,Object elem){
@@ -34,7 +36,7 @@ public class LRUCache {
                 node.pre = tail;
                 node.next = null;
                 tail = node;
-                hashMap.put(key, node);
+                //hashMap.put(key, node);
             }
             return;
         }

@@ -5,6 +5,9 @@ import com.sun.corba.se.impl.io.InputStreamHook;
 import com.sun.corba.se.spi.orbutil.fsm.Input;
 
 import java.io.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
@@ -61,21 +64,33 @@ public class DefaultUrlClassLoader{
             loaderMap.remove(key);  //最后再来删除这个map
         }
     }
-    public static void main(String[] args) throws Exception{
-        URL url1=new URL("http://localhost:8080/jar/pullList?groupCode=normal");
-        InputStream is= url1.openStream();
-        byte[] buffer=new byte[1024];
-        int length=1024;
-        while((length=is.read(buffer))>0){
-            System.out.println(new String(buffer,0,length));
+    public static class DefaultInvocationHandler implements InvocationHandler{
+
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            return null;
         }
-
-
-
-        URL url=new URL("http://localhost:8080/jar/pull?jarName=mergesort-1.0-SNAPSHOT.jar&groupCode=normal");
-        URLClassLoader urlClassLoader=new URLClassLoader(new URL[]{url});
-        Class cls=urlClassLoader.loadClass("com.creditease.toumi.MergeSort");
-        Object obj=cls.newInstance();
+    }
+    public static void main(String[] args) throws Exception{
+//        URL url1=new URL("http://localhost:8080/jar/pullList?groupCode=normal");
+//        InputStream is= url1.openStream();
+//        byte[] buffer=new byte[1024];
+//        int length=1024;
+//        while((length=is.read(buffer))>0){
+//            System.out.println(new String(buffer,0,length));
+//        }
+//-------------------------------------------------------------------------------------------------------
+//        URL url=new URL("file:///D:/workspace4j/PrintClassLoader/target/printclassloader-1.0-SNAPSHOT.jar");
+//        URLClassLoader urlClassLoader=new URLClassLoader(new URL[]{url});
+//        Class cls=urlClassLoader.loadClass("com.test.PrintClassLoader");
+//        Object obj=Proxy.newProxyInstance(urlClassLoader,new Class[]{cls},new DefaultInvocationHandler());
+//        System.out.println("hello");
+        //---------------------------------------------------------------------------------------------------
+//        URL url=new URL("file:///D:/workspace4j/PrintClassLoader/target/printclassloader-1.0-SNAPSHOT.jar");
+//        URLClassLoader urlClassLoader=new URLClassLoader(new URL[]{url});
+//        Class cls=urlClassLoader.loadClass("com.test.PrintClassLoader");
+//        Object obj=cls.newInstance();
+//        Method[] methods=cls.getDeclaredMethods();
+//        methods[0].invoke(obj);
 //        DefaultUrlClassLoader defaultUrlClassLoader=new DefaultUrlClassLoader();
 //        File file=new File(ROOT);
 //        if(file.isDirectory()){
@@ -88,5 +103,21 @@ public class DefaultUrlClassLoader{
 //            }
 //        }
 //        System.out.println("end");
+        //----------------------------------------------------------------------------------------------------
+        {
+            //if printclass has a timer,then we cannot unloading the class;
+            URL url = new URL("file:///D:/workspace4j/PrintClassLoader/target/printclassloader-1.0-SNAPSHOT.jar");
+            URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{url});
+            Class cls = urlClassLoader.loadClass("com.test.PrintClass");
+            Object obj = cls.newInstance();
+            obj=null;
+            cls=null;
+            urlClassLoader.close();
+            urlClassLoader=null;
+            Thread.sleep(5000);
+            System.gc();
+        }
+        Thread.sleep(5000);
+        System.out.println("hello");
     }
 }
