@@ -31,7 +31,7 @@ public class Kmp {
         return root;
     }
     public static void main(String[] args){
-        String pattern="aaa";
+        String pattern="bowbg";
         String target="sbglneogbowbgwpgbqgpg";
         Node root=buildKmp(pattern);
         for(int i=0;i<target.length();i++){
