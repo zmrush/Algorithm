@@ -6,11 +6,10 @@ public class AssignmentProblem {
     public static void subroutine(BitSet ymatch,BitSet xmatch,int[] matches,int free_y,int[][] matrix,int[] N){
         ymatch.set(free_y,true);
         while(xmatch.get(N[free_y])){
-            if(N[free_y]==-1)
-                System.out.println("hello");
-            matches[free_y]=N[free_y];
+            //matches[free_y]=N[free_y];
             for(int i=0;i<matrix.length;i++){
                 if(matches[i]==N[free_y]){
+                    matches[free_y]=N[free_y];
                     free_y=i;
                     break;
                 }
@@ -103,7 +102,7 @@ public class AssignmentProblem {
                         }
                     }
                 }
-                N[free_y]=free_new;
+
                 iter=SS.listIterator();
                 while(iter.hasNext()){
                     int x=iter.next();
@@ -118,8 +117,11 @@ public class AssignmentProblem {
                         }
                     }
                 }
-                subroutine(ymatch,xmatch,matches,free_y,matrix,N);
-                match_count++;
+                if(ymatch.get(free_y)==false) {
+                    N[free_y]=free_new;
+                    subroutine(ymatch,xmatch,matches,free_y,matrix,N);
+                    match_count++;
+                }
             }
         }
         int cost=0;
