@@ -163,6 +163,8 @@ public class String2Int {
 
 
     public static int parseInt(String s){
+        if(s.length()>=13)
+            throw new RuntimeException("overflow");
         int index=0;
         int min=-0x7fffffff;
         int multmin=min/10;
