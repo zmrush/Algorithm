@@ -3,6 +3,7 @@ package com.mz;
 import java.util.*;
 
 public class AssignmentProblem {
+    public static final int EL_MAX=10000;
     public static void subroutine(BitSet ymatch,BitSet xmatch,int[] matches,int free_y,int[][] matrix,int[] N){
         ymatch.set(free_y,true);
         while(xmatch.get(N[free_y])){
@@ -31,7 +32,7 @@ public class AssignmentProblem {
             matches[i]=-1;
         }
         for(int i=0;i<matrix.length;i++){
-            int min=10000;
+            int min=EL_MAX;
             for(int j=0;j<matrix.length;j++){
                 if(el[i][j]<min){
                     min=el[i][j];

@@ -47,54 +47,147 @@ public class MaxRecurrentTest {
     }
 
     //well,we use manamatch algorithm
-    public static String getMaxRecurrentText2(String s){
-        StringBuilder sb=new StringBuilder(s.length()*2+1);
+//    public static String getMaxRecurrentText2(String s){
+//        StringBuilder sb=new StringBuilder(s.length()*2+1);
+//        sb.append("#");
+//        for(int i=0;i<s.length();i++){
+//            sb.append(s.charAt(i));
+//            sb.append("#");
+//        }
+//        int[] p=new int[sb.length()];
+//        p[0]=0;
+//        int R=0;
+//        int center=0;
+//        int maxR=0;
+//        int maxRIndex=0;
+//        for(int i=1;i<sb.length();i++){
+//            if(i>R){
+//                center=i;
+//                int count=0;
+//                while((i-count-1)>=0  && (i+count+1)<sb.length() && sb.charAt(i+count+1)==sb.charAt(i-count-1))
+//                    count++;
+//                R=i+count;
+//                p[i]=count;
+//                if(p[i]>maxR) {
+//                    maxR = p[i];
+//                    maxRIndex=i;
+//                }
+//            }else{
+//                if((p[2*center-i]+(i-center))<(R-center)){
+//                    p[i]=p[2*center-i];
+//                }else if((p[2*center-i]+(i-center))==(R-center)){
+//                    int count=0;
+//                    while((2*i-R-count-1)>=0 && (R+count+1)<sb.length() &&sb.charAt(2*i-R-count-1)==sb.charAt(R+count+1)){
+//                        count++;
+//                    }
+//                    center=i;
+//                    R=R+count;
+//                    p[i]=R-i;
+//                    if(p[i]>maxR) {
+//                        maxR = p[i];
+//                        maxRIndex=i;
+//                    }
+//                }else{
+//                    p[i]=R-i;
+//                }
+//            }
+//
+//        }
+//        StringBuilder result=new StringBuilder(maxR);
+//        for(int i=maxRIndex-maxR+1;i<maxRIndex+maxR;i=i+2){
+//            result.append(sb.charAt(i));
+//        }
+//        return result.toString();
+//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public static String getMaxRecurrentText2(String s) {
+        StringBuilder sb = new StringBuilder(s.length() * 2 + 1);
         sb.append("#");
-        for(int i=0;i<s.length();i++){
+        for (int i = 0; i < s.length(); i++) {
             sb.append(s.charAt(i));
             sb.append("#");
         }
+        int maxr=0;
+        int maxcenter=0;
+        int r=0;
+        int center=0;
+        int index=1;
         int[] p=new int[sb.length()];
         p[0]=0;
-        int R=0;
-        int center=0;
-        int maxR=0;
-        int maxRIndex=0;
-        for(int i=1;i<sb.length();i++){
-            if(i>R){
-                center=i;
-                int count=0;
-                while((i-count-1)>=0  && (i+count+1)<sb.length() && sb.charAt(i+count+1)==sb.charAt(i-count-1))
-                    count++;
-                R=i+count;
-                p[i]=count;
-                if(p[i]>maxR) {
-                    maxR = p[i];
-                    maxRIndex=i;
-                }
-            }else{
-                if((p[2*center-i]+(i-center))<(R-center)){
-                    p[i]=p[2*center-i];
-                }else if((p[2*center-i]+(i-center))==(R-center)){
-                    int count=0;
-                    while((2*i-R-count-1)>=0 && (R+count+1)<sb.length() &&sb.charAt(2*i-R-count-1)==sb.charAt(R+count+1)){
-                        count++;
-                    }
-                    center=i;
-                    R=R+count;
-                    p[i]=R-i;
-                    if(p[i]>maxR) {
-                        maxR = p[i];
-                        maxRIndex=i;
-                    }
+        while(r<sb.length()){
+            while(r <sb.length() && index<=r){
+                if(p[2*center-index]>(r-index)){
+                    p[index]=r-index;
+                }else if(p[2*center-index]<(r-index)){
+                    p[index]=p[2*center-index];
                 }else{
-                    p[i]=R-i;
+                    while((r+1)<sb.length() && (2*index-r-1)>=0 && sb.charAt(r+1)==sb.charAt(2*index-r-1))
+                        r+=1;
+                    center=index;
+                    p[index]=r-index;
+                    if(p[index]>maxr) {
+                        maxr = p[index];
+                        maxcenter=index;
+                    }
                 }
+                index++;
             }
-
+            if(index>r && index<sb.length()){
+                r=index;
+                while((r+1)<sb.length() && (2*index-r-1)>=0 && sb.charAt(r+1)==sb.charAt(2*index-r-1))
+                    r+=1;
+                center=index;
+                p[index]=r-index;
+                if(p[index]>maxr) {
+                    maxr = p[index];
+                    maxcenter=index;
+                }
+                index++;
+            }
+            if(index>=sb.length())
+                break;
         }
-        StringBuilder result=new StringBuilder(maxR);
-        for(int i=maxRIndex-maxR+1;i<maxRIndex+maxR;i=i+2){
+        StringBuilder result=new StringBuilder();
+        for(int i=maxcenter-maxr+1;i<maxcenter+maxr;i+=2){
             result.append(sb.charAt(i));
         }
         return result.toString();
