@@ -4,21 +4,21 @@ import java.util.*;
 
 public class AssignmentProblem {
     public static final int EL_MAX=10000;
-    public static void subroutine(BitSet ymatch,BitSet xmatch,int[] matches,int free_y,int[][] matrix,int[] N){
-        ymatch.set(free_y,true);
-        while(xmatch.get(N[free_y])){
-            //matches[free_y]=N[free_y];
-            for(int i=0;i<matrix.length;i++){
-                if(matches[i]==N[free_y]){
-                    matches[free_y]=N[free_y];
-                    free_y=i;
-                    break;
-                }
-            }
-        }
-        xmatch.set(N[free_y],true);
-        matches[free_y]=N[free_y];
-    }
+//    public static void subroutine(BitSet ymatch,BitSet xmatch,int[] matches,int free_y,int[][] matrix,int[] N){
+//        ymatch.set(free_y,true);
+//        while(xmatch.get(N[free_y])){
+//            //matches[free_y]=N[free_y];
+//            for(int i=0;i<matrix.length;i++){
+//                if(matches[i]==N[free_y]){
+//                    matches[free_y]=N[free_y];
+//                    free_y=i;
+//                    break;
+//                }
+//            }
+//        }
+//        xmatch.set(N[free_y],true);
+//        matches[free_y]=N[free_y];
+//    }
 //    public static int computeMinimum(int[][] matrix){
 //        int[][] el=new int[matrix.length][matrix.length];
 //        for(int i=0;i<el.length;i++){
@@ -142,7 +142,7 @@ public class AssignmentProblem {
             yo[i]=-1;
             int minweight=Integer.MAX_VALUE;
             for(int j=0;j<matrix.length;j++){
-                minweight=matrix[i][j]<minweight?matrix[j][i]:minweight;
+                minweight=matrix[j][i]<minweight?matrix[j][i]:minweight;
             }
             yw[i]=minweight;
         }
@@ -181,8 +181,10 @@ public class AssignmentProblem {
                                     find = true;
                                     break;
                                 } else {
-                                    if (!xset.contains(yo[i]) && !newxset.contains(yo[i]))
+                                    if (!xset.contains(yo[i]) && !newxset.contains(yo[i])) {
                                         newxset2.add(yo[i]);
+                                        yny[i]=x;  //我忘记写这句话了，导致没有正确得修改这个yny数组
+                                    }
                                 }
                             } else {
                                 if(yn[i]>(matrix[x][i] - xw[x] - yw[i]) ){
@@ -218,7 +220,7 @@ public class AssignmentProblem {
                             yn[i]=yn[i]-min;
                             if(yn[i]==0){
                                 if(!ymatch.get(i)){
-                                    free_y = yny[i];
+                                    free_y = i;  //我这个地方写错了，将free_y=i 写成了 free_y=yny[i];
                                     find = true;
                                     break;
                                 }else{
@@ -228,7 +230,6 @@ public class AssignmentProblem {
                         }
                     }
                     min=Integer.MAX_VALUE;//重新开始计算最小值
-
                 }//if y and x is full,add new ones
                 if(find==true)
                     break;
