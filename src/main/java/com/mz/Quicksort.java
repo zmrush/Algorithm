@@ -22,23 +22,41 @@ public class Quicksort {
 //        sort(a,st,end-1);
 //        sort(a,end+1,ed);
 //    }
+//    public static void sort(int[] a,int st,int ed){
+//        if(st>=ed)
+//            return;
+//        int middle=a[st];
+//        int left=st;
+//        int right=ed;
+//        while(left<right){
+//            while(left<right && a[right]>=middle)
+//                right--;
+//            a[left]=a[right];
+//            while(left<right && a[left]<=middle)
+//                left++;
+//            a[right]=a[left];
+//        }
+//        a[left]=middle;
+//        sort(a,st,left-1);
+//        sort(a,left+1,ed);
+//    }
     public static void sort(int[] a,int st,int ed){
         if(st>=ed)
             return;
-        int middle=a[st];
-        int left=st;
-        int right=ed;
-        while(left<right){
-            while(left<right && a[right]>=middle)
-                right--;
-            a[left]=a[right];
-            while(left<right && a[left]<=middle)
-                left++;
-            a[right]=a[left];
+        int i=st;
+        int j=ed;
+        int middle=a[i];
+        while(i<j){
+            while(i<j && a[i]>=middle)
+                j--;
+            a[i]=a[j];
+            while(i<j &&a[j]<=middle)
+                i++;
+            a[j]=a[i];
         }
-        a[left]=middle;
-        sort(a,st,left-1);
-        sort(a,left+1,ed);
+        a[i]=middle;
+        sort(a,st,i-1);
+        sort(a,i+1,ed);
     }
     public static void main(String[] args) throws Exception{
         int length=10;

@@ -51,6 +51,7 @@ public class SocketNIO implements Runnable{
         public void run() {
             try {
                 SocketChannel socketChannel=serverSocketChannel.accept();
+                socketChannel.configureBlocking(false);
                 //socketChannel.configureBlocking(false);
                 new Handler(socketChannel,selector);
             }catch (Exception e){

@@ -46,7 +46,7 @@ public class DiameterNTree {
                 for(NTreeNode child:cur.children){
                     if(first ==null || map.get(child)>map.get(first))
                         first=child;
-                    else if(second==null map.get(child)>map.get(second)){
+                    else if(second==null || map.get(child)>map.get(second)){
                         second=child;
                     }
                 }

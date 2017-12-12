@@ -1,7 +1,9 @@
 package com.mz;
 
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -108,6 +110,12 @@ public class LRUCache {
         String str5 = "string";
         System.out.println(str3 == str5);//true
 
+        ConcurrentHashMap<String,String> mapt=new ConcurrentHashMap<String,String>();
+        mapt.put("hello","world");
+        System.out.println(mapt.size());
+        HashMap<String,String> mapsl=new HashMap<String,String>();
+        mapsl.put("hello","world");
+        Runnable r = () -> { System.out.println("Running!"); };
 
 
         LinkedHashMap<String,Object> lrucache=new LinkedHashMap<String,Object>();

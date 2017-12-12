@@ -11,47 +11,71 @@ public class MaxHistogramArea {
         public int cursor;
         public int value;
     }
+//    public static int computeMaxArea(Component[] components){
+//        Stack<Component> stack=new Stack<Component>();
+//        int maxArea=0;
+//        for(int i=0;i<components.length;i++){
+//            if(stack.isEmpty())
+//                stack.push(components[i]);
+//            else{
+//                Component tmp=stack.peek();
+//                if(components[i].value>=tmp.value){
+//                    stack.push(components[i]);
+//                }else{
+//                    while(tmp.value>components[i].value && !stack.isEmpty()){
+//                        stack.pop();
+//                        int areaTmp=tmp.value;
+//                        if(!stack.isEmpty()){
+//                            tmp=stack.peek();
+//                            areaTmp=areaTmp*(i-tmp.cursor-1);
+//                        }else{
+//                            areaTmp=areaTmp*(i);
+//                        }
+//                        if(areaTmp>maxArea)
+//                            maxArea=areaTmp;
+//                    }
+//                    stack.push(components[i]);
+//                }
+//            }
+//        }
+//        while(!stack.isEmpty()){
+//            Component tmp=stack.pop();
+//            int areaTmp=tmp.value;
+//            if(!stack.isEmpty()){
+//                tmp=stack.peek();
+//                areaTmp=areaTmp*(components.length-tmp.cursor-1);
+//            }else{
+//                areaTmp=areaTmp*(components.length);
+//            }
+//            if(areaTmp>maxArea)
+//                maxArea=areaTmp;
+//        }
+//        return maxArea;
+//
+//    }
     public static int computeMaxArea(Component[] components){
-        Stack<Component> stack=new Stack<Component>();
         int maxArea=0;
-        for(int i=0;i<components.length;i++){
-            if(stack.isEmpty())
-                stack.push(components[i]);
-            else{
-                Component tmp=stack.peek();
-                if(components[i].value>=tmp.value){
-                    stack.push(components[i]);
-                }else{
-                    while(tmp.value>components[i].value && !stack.isEmpty()){
-                        stack.pop();
-                        int areaTmp=tmp.value;
-                        if(!stack.isEmpty()){
-                            tmp=stack.peek();
-                            areaTmp=areaTmp*(i-tmp.cursor-1);
-                        }else{
-                            areaTmp=areaTmp*(i);
-                        }
-                        if(areaTmp>maxArea)
-                            maxArea=areaTmp;
-                    }
-                    stack.push(components[i]);
-                }
+        Stack<Component> stack=new Stack<Component>();
+        for(Component component:components){
+            while(!stack.isEmpty() && stack.peek().value>=component.value){
+                Component tmp=stack.pop();
+                int left=0;
+                if(!stack.isEmpty())
+                    left=stack.peek().cursor+1;
+                if((component.cursor-left)*tmp.value>maxArea)
+                    maxArea=(component.cursor-left)*tmp.value;
             }
+            stack.push(component);
         }
         while(!stack.isEmpty()){
-            Component tmp=stack.pop();
-            int areaTmp=tmp.value;
-            if(!stack.isEmpty()){
-                tmp=stack.peek();
-                areaTmp=areaTmp*(components.length-tmp.cursor-1);
-            }else{
-                areaTmp=areaTmp*(components.length);
-            }
-            if(areaTmp>maxArea)
-                maxArea=areaTmp;
+            Component cur=stack.pop();
+            int left=0;
+            if(!stack.isEmpty())
+                left=stack.peek().cursor+1;
+            if((components.length-left)*cur.value>maxArea)
+                maxArea=(components.length-left)*cur.value;
         }
         return maxArea;
-
     }
     public static void main(String[] args){
         Scanner scanner=new Scanner(System.in);
