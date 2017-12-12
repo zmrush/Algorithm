@@ -4,21 +4,21 @@ import java.util.*;
 
 public class AssignmentProblem {
     public static final int EL_MAX=10000;
-//    public static void subroutine(BitSet ymatch,BitSet xmatch,int[] matches,int free_y,int[][] matrix,int[] N){
-//        ymatch.set(free_y,true);
-//        while(xmatch.get(N[free_y])){
-//            //matches[free_y]=N[free_y];
-//            for(int i=0;i<matrix.length;i++){
-//                if(matches[i]==N[free_y]){
-//                    matches[free_y]=N[free_y];
-//                    free_y=i;
-//                    break;
-//                }
-//            }
-//        }
-//        xmatch.set(N[free_y],true);
-//        matches[free_y]=N[free_y];
-//    }
+    public static void subroutine(BitSet ymatch,BitSet xmatch,int[] matches,int free_y,int[][] matrix,int[] N){
+        ymatch.set(free_y,true);
+        while(xmatch.get(N[free_y])){
+            //matches[free_y]=N[free_y];
+            for(int i=0;i<matrix.length;i++){
+                if(matches[i]==N[free_y]){
+                    matches[free_y]=N[free_y];
+                    free_y=i;
+                    break;
+                }
+            }
+        }
+        xmatch.set(N[free_y],true);
+        matches[free_y]=N[free_y];
+    }
 //    public static int computeMinimum(int[][] matrix){
 //        int[][] el=new int[matrix.length][matrix.length];
 //        for(int i=0;i<el.length;i++){
