@@ -162,40 +162,115 @@ public class String2Int {
 //    }
 
 
+//    public static int parseInt(String s){
+//        if(s.length()>=13)
+//            throw new RuntimeException("overflow");
+//        int index=0;
+//        int min=-0x7fffffff;
+//        int multmin=min/10;
+//        boolean isNeg=false;
+//        int value=0;
+//        if(s==null || s.length()<=0)
+//            throw new RuntimeException("input is null");
+//        if(s.charAt(index)=='-'){
+//            if(s.length()<=1)
+//                throw new RuntimeException("iput is wrong");
+//            min=0x80000000;
+//            multmin=min/10;
+//            index++;
+//            isNeg=true;
+//        }else if(s.charAt(index)=='+'){
+//            index++;
+//        }
+//        while(index<s.length()){
+//            if(!isDigit(s.charAt(index)))
+//                throw new RuntimeException("input is wrong");
+//            if(value<multmin)
+//                throw new RuntimeException("overflow");
+//            int tmp=s.charAt(index)-'0';
+//            if(value*10<min+tmp)
+//                throw new RuntimeException("overflow");
+//            value=value*10-tmp;
+//            index++;
+//        }
+//        if(isNeg)
+//            return value;
+//        return -value;
+//    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static int parseInt(String s){
-        if(s.length()>=13)
-            throw new RuntimeException("overflow");
+        if(s==null || s.equals(""))
+            throw new RuntimeException("format error");
         int index=0;
-        int min=-0x7fffffff;
-        int multmin=min/10;
-        boolean isNeg=false;
+        int limit=-0x7fffffff;
+        int mullimit=limit/10;
         int value=0;
-        if(s==null || s.length()<=0)
-            throw new RuntimeException("input is null");
+        boolean isNeg=false;
         if(s.charAt(index)=='-'){
-            if(s.length()<=1)
-                throw new RuntimeException("iput is wrong");
-            min=0x80000000;
-            multmin=min/10;
-            index++;
+            limit=0x80000000;
+            mullimit=limit/10;
             isNeg=true;
-        }else if(s.charAt(index)=='+'){
             index++;
         }
+        if(s.charAt(index)=='+'){
+            index++;
+        }
+        if(s.length()<=index)
+            throw new RuntimeException("format error");
         while(index<s.length()){
             if(!isDigit(s.charAt(index)))
-                throw new RuntimeException("input is wrong");
-            if(value<multmin)
+                throw new RuntimeException("format error");
+            if(value<mullimit)
                 throw new RuntimeException("overflow");
-            int tmp=s.charAt(index)-'0';
-            if(value*10<min+tmp)
+            if(value*10<limit+(s.charAt(index)-'0'))
                 throw new RuntimeException("overflow");
-            value=value*10-tmp;
+            value=value*10-(s.charAt(index)-'0');
             index++;
         }
         if(isNeg)
             return value;
         return -value;
+
     }
     public static void main(String[] args) {
         String s =String.valueOf("2147483648");

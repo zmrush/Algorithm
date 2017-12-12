@@ -12,10 +12,11 @@ public class JosephProblem {
         int k=scanner.nextInt();
         int f=0;
         for(int i=2;i<=n;i++){
-            if(f<=(i-1-k%i))
-                f=f+k%i;
-            else
-                f=f-(i-1-k%i);
+//            if(f<=(i-1-k%i))
+//                f=f+k%i;
+//            else
+//                f=f-(i-1-k%i);
+            f=(f+k)%i;
         }
         System.out.println(f);
     }

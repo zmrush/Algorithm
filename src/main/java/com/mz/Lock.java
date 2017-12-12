@@ -1,6 +1,9 @@
 package com.mz;
 
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -18,7 +21,10 @@ public class Lock {
         }
     }
     public static void main(String[] args) throws Exception{
-
+        Thread.sleep(1000);
+        ReentrantLock reentrantLock=new ReentrantLock();
+        Condition condition= reentrantLock.newCondition();
+        condition.await();
         int a=Integer.MAX_VALUE;
         System.out.println(a);
         Thread A=new Thread(new Runnable() {

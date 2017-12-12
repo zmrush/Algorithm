@@ -31,23 +31,36 @@ public class MaxContiguousProduct {
 //        }
 //        return count;
 //    }
+//    public static long getContinuousNumber(int[] number,long K){
+//        int count=0;
+//        int start=0;
+//        int end=0;
+//        long tmp=1;
+//        while(end<number.length){
+//            if(number[end]<=K/tmp && number[end]*tmp<K){
+//                count+=end-start+1;
+//                tmp=number[end]*tmp;
+//                end++;
+//            }else if(end>start){
+//                tmp=tmp/number[start];
+//                start++;
+//            }else{
+//                end=start=start+1;
+//                tmp=1;
+//            }
+//        }
+//        return count;
+//    }
+
     public static long getContinuousNumber(int[] number,long K){
-        int count=0;
         int start=0;
-        int end=0;
         long tmp=1;
-        while(end<number.length){
-            if(number[end]<=K/tmp && number[end]*tmp<K){
-                count+=end-start+1;
-                tmp=number[end]*tmp;
-                end++;
-            }else if(end>start){
-                tmp=tmp/number[start];
+        int count=0;
+        for(int end=0;end<number.length;end++){
+            while(start<=end && number[end]>=(K+tmp-1)/tmp){
                 start++;
-            }else{
-                end=start=start+1;
-                tmp=1;
             }
+            count+=end-start+1;
         }
         return count;
     }
