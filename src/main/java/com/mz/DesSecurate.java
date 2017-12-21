@@ -56,7 +56,7 @@ public class DesSecurate {
         String password="123456";
         byte[] e = "0123456789ABCDEF".getBytes("ASCII");
         SecretKeySpec spec = new SecretKeySpec(e, "AES");
-        String result="bae996b948645da06922be240ff3fea1";
+        String result="9b71344edfcbe7781701f91e9aa2ee45";
 //--------------------------------------------------------------------------
         Cipher cipher2 = Cipher.getInstance("AES");
         cipher2.init(Cipher.DECRYPT_MODE, spec);

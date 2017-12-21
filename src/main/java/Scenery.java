@@ -1,5 +1,4 @@
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Created by mingzhu7 on 2017/12/13.
@@ -63,22 +62,40 @@ public class Scenery {
     }
     public static boolean pickFirst(Pair[] pairs,int start,int length){
         mainloop:while(true) {
-            int first = start + 1;
-            while (first < pairs.length) {
-                if (pairs[first].start > pairs[start].end - length * 2)
-                    break;
-                first++;
+//            int first = start + 1;
+//            while (first < pairs.length) {
+//                if (pairs[first].start > pairs[start].end - length * 2)
+//                    break;
+//                first++;
+//            }
+//            if (start == pairs.length - 1)
+//                return true;
+//            LinkedList<Integer> queue = new LinkedList<Integer>();
+//            queue.add(start);
+//            for (int i = start + 1; i < first; i++) {
+//                if (pairs[i].end <= pairs[queue.peek()].end) {
+//                    while (!queue.isEmpty() && (pairs[i].end - 2 * length < pairs[queue.peek()].start))
+//                        queue.pop();
+//                    queue.push(i);
+//                }
+//            }
+            if (start == pairs.length - 1) {
+                if(pairs[start].end>=pairs[start].start+length)
+                    return true;
+                return false;
             }
-            if (start == pairs.length - 1)
-                return true;
             LinkedList<Integer> queue = new LinkedList<Integer>();
-            queue.add(start);
-            for (int i = start + 1; i < first; i++) {
-                if (pairs[i].end <= pairs[queue.peek()].end) {
-                    while (!queue.isEmpty() && (pairs[i].end - 2 * length < pairs[queue.peek()].start))
+            queue.push(start);
+            int first=start+1;
+            while(first<pairs.length){
+                if((pairs[first].start>pairs[queue.peek()].end-length*2) || (pairs[first].start>pairs[start].start+length))
+                    break;
+                if (pairs[first].end <= pairs[queue.peek()].end) {
+                    while (!queue.isEmpty() && (pairs[first].end - 2 * length < pairs[queue.peek()].start))
                         queue.pop();
-                    queue.push(i);
+                    queue.push(first);
                 }
+                first++;
             }
             if (queue.size() == 1) {
                 //-----------------------------------------------
@@ -103,6 +120,57 @@ public class Scenery {
             }
             return false;
         }
+    }
+    public static class Cn{
+        public int E;
+        public int C;
+        public int N;
+    }
+    public boolean pick(Pair[] pairs,int length){
+        List<Pair> blocks=new ArrayList<Pair>();
+        LinkedList<Cn> cns=new LinkedList<Cn>();
+        for(int i=pairs.length-1;i>=0;i--){
+            Pair cur=pairs[i];
+            int lowerNum=0;
+            boolean hasEqual=false;
+            int minLower=Integer.MAX_VALUE;
+            Iterator<Cn> iter=cns.iterator();
+            while(iter.hasNext()){
+                Cn lower=iter.next();
+                if(lower.E>cur.end){
+                    lower.N=lower.N+1;
+                    lower.C=lower.C-length;
+                    //----------------------------
+                    //----------------------------
+                    minLower=lower.C<minLower?lower.C:minLower;
+                }else if(lower.E==cur.end){
+                    hasEqual=true;
+                    lower.N=lower.N+1;
+                    lower.C=lower.C-length;
+                    //--------------------------
+                    //--------------------------
+                }else{
+                    lowerNum=lower.N>lowerNum?lower.N:lowerNum;
+                }
+            }
+            if(hasEqual==false){
+                Cn cn=new Cn();
+                cn.N=lowerNum+1;
+                cn.E=cur.end;
+                cn.C=cn.E-length*cn.N;
+                //----------------
+                //----------------
+                cns.add(cn);
+                minLower=cn.C<minLower?cn.C:minLower;
+            }
+            if(minLower-length<cur.start){
+                Pair block=new Pair();
+                block.start=minLower-length;
+                block.end=cur.start;
+                blocks.add(block);
+            }
+        }
+        return true;
     }
     public static void main(String[] args){
         Scanner scanner=new Scanner(System.in);

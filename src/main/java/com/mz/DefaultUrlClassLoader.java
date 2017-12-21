@@ -106,10 +106,12 @@ public class DefaultUrlClassLoader{
         //----------------------------------------------------------------------------------------------------
         {
             //if printclass has a timer,then we cannot unloading the class;
-            URL url = new URL("file:///D:/workspace4j/PrintClassLoader/target/printclassloader-1.0-SNAPSHOT.jar");
+            URL url = new URL("file:///D:/workspace/PrintPathTest/target/print-path-test-1.0-SNAPSHOT.jar");
             URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{url});
             Class cls = urlClassLoader.loadClass("com.test.PrintClass");
             Object obj = cls.newInstance();
+            Method method=cls.getMethods()[0];
+            method.invoke(obj);
             obj=null;
             cls=null;
             urlClassLoader.close();
