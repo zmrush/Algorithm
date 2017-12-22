@@ -126,8 +126,9 @@ public class Scenery {
         public int C;
         public int N;
     }
-    public boolean pick(Pair[] pairs,int length){
-        List<Pair> blocks=new ArrayList<Pair>();
+    public static boolean pick(Pair[] pairs,int length){
+        //List<Pair> blocks=new ArrayList<Pair>();
+        TreeMap<Integer,Pair> blocks=new TreeMap<Integer,Pair>();
         LinkedList<Cn> cns=new LinkedList<Cn>();
         for(int i=pairs.length-1;i>=0;i--){
             Pair cur=pairs[i];
@@ -141,6 +142,11 @@ public class Scenery {
                     lower.N=lower.N+1;
                     lower.C=lower.C-length;
                     //----------------------------
+                    Map.Entry<Integer,Pair> pairEntry=blocks.lowerEntry(lower.C);
+                    if(pairEntry!=null && lower.C>pairEntry.getValue().start && lower.C<pairEntry.getValue().end)
+                        lower.C=pairEntry.getValue().start;
+                    if(lower.C<cur.start)
+                        return false;
                     //----------------------------
                     minLower=lower.C<minLower?lower.C:minLower;
                 }else if(lower.E==cur.end){
@@ -148,7 +154,13 @@ public class Scenery {
                     lower.N=lower.N+1;
                     lower.C=lower.C-length;
                     //--------------------------
+                    Map.Entry<Integer,Pair> pairEntry=blocks.lowerEntry(lower.C);
+                    if(pairEntry!=null &&  lower.C>pairEntry.getValue().start && lower.C<pairEntry.getValue().end)
+                        lower.C=pairEntry.getValue().start;
+                    if(lower.C<cur.start)
+                        return false;
                     //--------------------------
+                    minLower=lower.C<minLower?lower.C:minLower;
                 }else{
                     lowerNum=lower.N>lowerNum?lower.N:lowerNum;
                 }
@@ -159,6 +171,11 @@ public class Scenery {
                 cn.E=cur.end;
                 cn.C=cn.E-length*cn.N;
                 //----------------
+                Map.Entry<Integer,Pair> pairEntry=blocks.lowerEntry(cn.C);
+                if(pairEntry!=null && cn.C>pairEntry.getValue().start && cn.C<pairEntry.getValue().end)
+                    cn.C=pairEntry.getValue().start;
+                if(cn.C<cur.start)
+                    return false;
                 //----------------
                 cns.add(cn);
                 minLower=cn.C<minLower?cn.C:minLower;
@@ -167,7 +184,14 @@ public class Scenery {
                 Pair block=new Pair();
                 block.start=minLower-length;
                 block.end=cur.start;
-                blocks.add(block);
+                Map.Entry<Integer,Pair> firstEntry=blocks.firstEntry();
+                if(firstEntry!=null && block.end>firstEntry.getValue().start){
+                    block.end=firstEntry.getValue().end;
+                    blocks.remove(firstEntry.getKey());
+                    blocks.put(block.start,block);
+                }else{
+                    blocks.put(block.start,block);
+                }
             }
         }
         return true;
@@ -188,7 +212,7 @@ public class Scenery {
             }
         }
         quicksort(pair,0,numbers-1);
-        if(check==false && pickFirst(pair,0,length))
+        if(check==false && pick(pair,length))
             System.out.println("yes");
         else
             System.out.println("no");
