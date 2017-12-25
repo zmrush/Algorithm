@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  * Created by mingzhu7 on 2017/12/13.
@@ -122,13 +123,13 @@ public class Scenery {
         }
     }
     public static class Cn{
-        public int E;
-        public int C;
-        public int N;
+        public int E;//end
+        public int C;//c
+        public int N;//how many are in this interval from  last start s to this end
     }
     public static boolean pick(Pair[] pairs,int length){
         //List<Pair> blocks=new ArrayList<Pair>();
-        TreeMap<Integer,Pair> blocks=new TreeMap<Integer,Pair>();
+        TreeMap<Integer,Pair> blocks=new TreeMap<Integer,Pair>();//block start map to block startn and end
         LinkedList<Cn> cns=new LinkedList<Cn>();
         for(int i=pairs.length-1;i>=0;i--){
             Pair cur=pairs[i];
@@ -169,11 +170,18 @@ public class Scenery {
                 Cn cn=new Cn();
                 cn.N=lowerNum+1;
                 cn.E=cur.end;
-                cn.C=cn.E-length*cn.N;
-                //----------------
-                Map.Entry<Integer,Pair> pairEntry=blocks.lowerEntry(cn.C);
-                if(pairEntry!=null && cn.C>pairEntry.getValue().start && cn.C<pairEntry.getValue().end)
-                    cn.C=pairEntry.getValue().start;
+//                cn.C=cn.E-length*cn.N; //this has some problem
+//                //----------------
+//                Map.Entry<Integer,Pair> pairEntry=blocks.lowerEntry(cn.C);
+//                if(pairEntry!=null && cn.C>pairEntry.getValue().start && cn.C<pairEntry.getValue().end)
+//                    cn.C=pairEntry.getValue().start;
+                cn.C=cn.E;
+                for(int j=0;j<cn.N;j++){
+                    cn.C=cn.C-length;
+                    Map.Entry<Integer,Pair> pairEntry=blocks.lowerEntry(cn.C);
+                    if(pairEntry!=null && cn.C>pairEntry.getValue().start && cn.C<pairEntry.getValue().end)
+                        cn.C=pairEntry.getValue().start;
+                }
                 if(cn.C<cur.start)
                     return false;
                 //----------------
