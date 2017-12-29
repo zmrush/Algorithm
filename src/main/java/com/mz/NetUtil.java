@@ -4,9 +4,7 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by mingzhu7 on 2017/12/26.
@@ -49,6 +47,28 @@ public class NetUtil {
 
     }
     public static void main(String[] args) throws Exception{
+        LinkedList<Integer> list=new LinkedList<>();
+        list.add(3);list.add(5);list.add(6);
+        ListIterator<Integer> listIterator=list.listIterator();
+        while(listIterator.hasNext()){
+            Integer tmp=listIterator.next();
+            if(tmp==5){
+//                listIterator.set(4);
+                listIterator.add(4);
+                listIterator.next();
+                listIterator.previous();
+                listIterator.remove();
+            }
+        }
+        Iterator<Integer> iter=list.iterator();
+        while(iter.hasNext()){
+            System.out.println(iter.next());
+        }
+        iter=list.descendingIterator();
+        while(iter.hasNext()){
+            System.out.println(iter.next());
+            iter.remove();
+        }
         InetAddress inetAddress2=Inet4Address.getLocalHost();
         System.out.println(inetAddress2);
         NetUtil netUtil=new NetUtil();
