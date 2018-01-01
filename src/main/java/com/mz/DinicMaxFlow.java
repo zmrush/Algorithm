@@ -8,7 +8,8 @@ import java.util.Scanner;
  * Created by mingzhu7 on 2017/12/29.
  */
 public class DinicMaxFlow {
-    static double maxFlow(double[][] edges,int source,int sink){
+    private static final double DB_EPSLON=0.0000001;
+    public static double maxFlow(double[][] edges,int source,int sink){
         double flow=0.0;
         int[] level=new int[edges.length];
         LinkedList<Integer>[] onLevel=new LinkedList[edges.length];
@@ -24,7 +25,7 @@ public class DinicMaxFlow {
             while(!queue.isEmpty()){
                 Integer from=queue.pop();
                 for(int i=0;i<edges.length;i++){
-                    if(edges[from][i]>0.0 && level[i]==-1){
+                    if(edges[from][i]>DB_EPSLON && level[i]==-1){
                         level[i]=level[from]+1;
                         queue.push(i);
                     }
@@ -61,7 +62,7 @@ public class DinicMaxFlow {
                     while(iter.hasNext()){
                         int next=iter.next();
                         edges[next][last]-=mincapacity;
-                        if(edges[next][last]<=0.0000001){
+                        if(edges[next][last]<=DB_EPSLON){
                             edges[next][last]=0.0;
                             onLevel[next].pop();
                         }
