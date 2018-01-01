@@ -10,13 +10,12 @@ import java.util.Scanner;
 public class DinicMaxFlow {
     static double maxFlow(double[][] edges,int source,int sink){
         double flow=0.0;
-        int[][] onLevel=new int[edges.length][edges.length];
         int[] level=new int[edges.length];
-        int[] marked=new int[edges.length];
+        LinkedList<Integer>[] onLevel=new LinkedList[edges.length];
         while(true){
             for(int i=0;i<level.length;i++) {
                 level[i] = -1;//initializing
-                marked[i]=0;
+                onLevel[i]=new LinkedList<Integer>();
             }
             //bfs
             LinkedList<Integer> queue=new LinkedList<Integer>();
@@ -30,28 +29,57 @@ public class DinicMaxFlow {
                         queue.push(i);
                     }
                     if(level[i]==level[from]+1){
-                        onLevel[from][i]=1;//put into the level graph
+                        //onLevel[from][i]=1;//put into the level graph
+                        onLevel[from].push(i);
                     }
                 }
             }
             if(level[sink]==-1)
                 break;//there is no way from source to sink
-            //dfs
+            //dfs until there is no path from source to sink in the level graph
             LinkedList<Integer> dfsQueue=new LinkedList<Integer>();
             dfsQueue.push(source);
             while(!dfsQueue.isEmpty()){
                 int from=dfsQueue.peek();
                 if(from==sink){
-                    Iterator<Integer> iter=dfsQueue.iterator();
+                    Iterator<Integer> iter=dfsQueue.descendingIterator();
+                    int last =iter.next();
+                    double mincapacity=Double.MAX_VALUE;
+                    int minLevel=Integer.MAX_VALUE;
                     while (iter.hasNext()) {
-
+                        int next=iter.next();
+                        if(edges[last][next]<mincapacity){
+                            mincapacity=edges[last][next];
+                            minLevel=level[last];
+                        }
+                        last=next;
+                    }
+                    flow+=mincapacity;
+                    iter=dfsQueue.iterator();
+                    last=iter.next();
+                    iter.remove();
+                    while(iter.hasNext()){
+                        int next=iter.next();
+                        edges[next][last]-=mincapacity;
+                        if(edges[next][last]<=0.0000001){
+                            edges[next][last]=0.0;
+                            onLevel[next].pop();
+                        }
+                        edges[last][next]+=mincapacity;
+                        if(level[next]>minLevel)
+                            iter.remove();
+                        last=next;
+                    }
+                }else{
+                    if(onLevel[from].size()<=0){
+                        dfsQueue.pop();
+                        if(!dfsQueue.isEmpty()){
+                            onLevel[dfsQueue.peek()].pop();
+                        }
+                    }else{
+                        dfsQueue.push(onLevel[from].peek());
                     }
                 }
-            }
-            //reset level graph
-            for(int i=0;i<edges.length;i++){
-                for(int j=0;j<edges.length;j++)
-                    onLevel[i][j]=0;
             }
         }
         return flow;
@@ -74,6 +102,9 @@ public class DinicMaxFlow {
                 edges[end-1][start-1]=capacity;
             }
             result[i]=(int)maxFlow(edges,0,vertext-1);
+        }
+        for(int i=0;i<testNum;i++){
+            System.out.println(result[i]);
         }
     }
 }
