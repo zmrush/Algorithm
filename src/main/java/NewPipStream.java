@@ -35,6 +35,8 @@ public class NewPipStream {
     }
 
     static int flow(int[][] c, int x, int e) {
+        for(int i=0;i<seen.length;i++)
+            seen[i]=false;
         return flow_dfs(c, x, e, 1000000000);
     }
 
@@ -100,12 +102,12 @@ public class NewPipStream {
                 seen[i]=false;
             rem -= flubber_dfs(1, 3, rem);
         }
+        DecimalFormat decimalFormat=new DecimalFormat("0.000000000");
         for (int i = 0; i < P; i++) {
-
-            System.out.print(fflow[X[i]][Y[i]] / V);
+            System.out.print(decimalFormat.format(fflow[X[i]][Y[i]] / V));
             System.out.print(" ");
-            System.out.println(wflow[X[i]][Y[i]]);
+            System.out.println(decimalFormat.format(wflow[X[i]][Y[i]]));
         }
-        System.out.println(Math.pow(F/V, A) * Math.pow(f-F, B));
+        System.out.println(decimalFormat.format(Math.pow(F/V, A) * Math.pow(f-F, B)));
     }
 }
