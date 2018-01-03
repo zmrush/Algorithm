@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -93,16 +94,16 @@ public class PipStream {
             for(int j=0;j<source.length;j++)
                 dst[i][j]=source[i][j];
     }
-    public static void print(int pipNum,double v,int[] outputstart,int[] outputend,double[][] new_edges,double[][] new_edges2){
+    public static void print(int pipNum,double v,int[] outputstart,int[] outputend,double[][] new_edges,double[][] new_edges2,DecimalFormat decimalFormat){
         for(int i=0;i<pipNum;i++){
             if(new_edges[outputstart[i]][outputend[i]]>=DB_EPSLON){
-                System.out.print((new_edges[outputstart[i]][outputend[i]]-new_edges2[outputstart[i]][outputend[i]])/v);
+                System.out.print(decimalFormat.format((new_edges[outputstart[i]][outputend[i]]-new_edges2[outputstart[i]][outputend[i]])/v));
                 System.out.print(" ");
-                System.out.println(new_edges2[outputstart[i]][outputend[i]]);
+                System.out.println(decimalFormat.format(new_edges2[outputstart[i]][outputend[i]]));
             }else if(new_edges[outputend[i]][outputstart[i]]>=DB_EPSLON){
-                System.out.print((new_edges2[outputend[i]][outputstart[i]]-new_edges[outputend[i]][outputstart[i]])/v);
+                System.out.print(decimalFormat.format((new_edges2[outputend[i]][outputstart[i]]-new_edges[outputend[i]][outputstart[i]])/v));
                 System.out.print(" ");
-                System.out.println(-new_edges2[outputend[i]][outputstart[i]]);
+                System.out.println(decimalFormat.format(-new_edges2[outputend[i]][outputstart[i]]));
             }else{
                 System.out.print(0);
                 System.out.print(" ");
@@ -110,7 +111,7 @@ public class PipStream {
             }
         }
     }
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception{
         Scanner scanner=new Scanner(System.in);
         int vertext=scanner.nextInt();
         int pipNum=scanner.nextInt();
@@ -176,6 +177,10 @@ public class PipStream {
             maxFlow(new_edges5,1,3,(max_flow-w_max_flow));
             print(pipNum,v,outputstart,outputend,new_edges4,new_edges5);
             System.out.println(Math.pow((max_flow-w_max_flow)/v,a)*Math.pow((w_max_flow),(1-a)));
+            maxFlow(new_edges5,1,3);
+            DecimalFormat decimalFormat=new DecimalFormat("0.000000000");
+            print(pipNum,v,outputstart,outputend,new_edges4,new_edges5,decimalFormat);
+            System.out.println(decimalFormat.format(Math.pow((max_flow-w_max_flow)/v,a)*Math.pow((w_max_flow),(1-a))));
         }else{//mix
             double alpha=((a-1)*max_flow+w_max_flow)/(f_max_flow+w_max_flow-max_flow);
             double[][] new_edges4=new double[vertext+1][vertext+1];
@@ -192,9 +197,10 @@ public class PipStream {
             }
             double[][] new_edges5=new double[vertext+1][vertext+1];
             copyEdges(new_edges4,new_edges5);
-            double lamda=maxFlow(new_edges5,1,3,a*max_flow);
-            print(pipNum,v,outputstart,outputend,new_edges4,new_edges5);
-            System.out.println(Math.pow(a*max_flow/v,a)*Math.pow((1-a)*max_flow,(1-a)));
+            double lamda=maxFlow(new_edges5,1,3);
+            DecimalFormat decimalFormat=new DecimalFormat("0.000000000");
+            print(pipNum,v,outputstart,outputend,new_edges4,new_edges5,decimalFormat);
+            System.out.println(decimalFormat.format(Math.pow(a*max_flow/v,a)*Math.pow((1-a)*max_flow,(1-a))));
         }
 
     }

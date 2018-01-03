@@ -35,6 +35,8 @@ public class NewPipStream {
     }
 
     static int flow(int[][] c, int x, int e) {
+        for(int i=0;i<seen.length;i++)
+            seen[i]=false;
         return flow_dfs(c, x, e, 1000000000);
     }
 
@@ -94,18 +96,25 @@ public class NewPipStream {
         for (int x = 1; x <= N; x++)
             for (int y = 1; y <= N; y++) {
                 wflow[x][y] = cap3[x][y] - (v1*cap[x][y] + v2*cap2[x][y]);
+//                double f1=cap[x][y]<cap3[x][y]?(cap3[x][y]-cap[x][y]):(cap[y][x]<cap3[y][x]?(cap2[y][x]-cap3[y][x]):0);
+//                double f2=cap2[x][y]<cap3[x][y]?(cap3[x][y]-cap2[x][y]):(cap2[y][x]<cap3[y][x]?(cap2[y][x]-cap3[y][x]):0);
+//                double new_capacity=v1*f1+v2*f2;
+//                if(new_capacity>=0)
+//                    wflow[x][y]=new_capacity;
+//                else
+//                    wflow[y][x]=-new_capacity;
             }
         for (double rem = F; rem > 1e-7; ) {
             for(int i=0;i<seen.length;i++)
                 seen[i]=false;
             rem -= flubber_dfs(1, 3, rem);
         }
+        DecimalFormat decimalFormat=new DecimalFormat("0.000000000");
         for (int i = 0; i < P; i++) {
-
-            System.out.print(fflow[X[i]][Y[i]] / V);
+            System.out.print(decimalFormat.format(fflow[X[i]][Y[i]] / V));
             System.out.print(" ");
-            System.out.println(wflow[X[i]][Y[i]]);
+            System.out.println(decimalFormat.format(wflow[X[i]][Y[i]]));
         }
-        System.out.println(Math.pow(F/V, A) * Math.pow(f-F, B));
+        System.out.println(decimalFormat.format(Math.pow(F/V, A) * Math.pow(f-F, B)));
     }
 }
