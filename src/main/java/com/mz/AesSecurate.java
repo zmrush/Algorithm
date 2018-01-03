@@ -5,6 +5,8 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Stack;
 
 /**
  * Created by mingzhu7 on 2017/12/7.
@@ -81,6 +83,17 @@ public class AesSecurate {
     }
 
     public static void main(String[] args) throws Exception{
+        Stack<Integer> stack=new Stack<Integer>();
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        stack.push(4);
+        Iterator<Integer> iter=stack.iterator();
+        while(iter.hasNext()){
+            Integer i=iter.next();
+            if(i>3)
+                iter.remove();
+        }
         String path="push.html";
         String regex="push.*";
         boolean ismatch=path.matches(regex);
