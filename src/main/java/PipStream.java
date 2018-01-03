@@ -103,7 +103,7 @@ public class PipStream {
             }
         }
     }
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception{
         Scanner scanner=new Scanner(System.in);
         int vertext=scanner.nextInt();
         int pipNum=scanner.nextInt();
@@ -174,22 +174,24 @@ public class PipStream {
         }else{//mix
             double alpha=((a-1)*max_flow+w_max_flow)/(f_max_flow+w_max_flow-max_flow);
             double[][] new_edges4=new double[vertext+1][vertext+1];
+//            for(int i=0;i<vertext+1;i++){
+//                for(int j=i+1;j<vertext+1;j++){
+//                    double f1=new_edges2[i][j]<edges[i][j]?(edges[i][j]-new_edges2[i][j]):(new_edges2[j][i]<edges[j][i]?(new_edges2[j][i]-edges[j][i]):0);
+//                    double f2=new_edges3[i][j]<edges[i][j]?(edges[i][j]-new_edges3[i][j]):(new_edges3[j][i]<edges[j][i]?(new_edges3[j][i]-edges[j][i]):0);
+//                    double new_capacity=alpha*f1+(1-alpha)*f2;
+//                    if(new_capacity>=0)
+//                        new_edges4[i][j]=new_capacity;
+//                    else
+//                        new_edges4[j][i]=-new_capacity;
+//                }
+//            }
             for(int i=0;i<vertext+1;i++){
-                for(int j=i+1;j<vertext+1;j++){
-                    double f1=new_edges2[i][j]<edges[i][j]?(edges[i][j]-new_edges2[i][j]):(new_edges2[j][i]<edges[j][i]?(new_edges2[j][i]-edges[j][i]):0);
-                    double f2=new_edges3[i][j]<edges[i][j]?(edges[i][j]-new_edges3[i][j]):(new_edges3[j][i]<edges[j][i]?(new_edges3[j][i]-edges[j][i]):0);
-                    double new_capacity=alpha*f1+(1-alpha)*f2;
-                    if(new_capacity>=0)
-                        new_edges4[i][j]=new_capacity;
-                    else
-                        new_edges4[j][i]=-new_capacity;
-                }
+                for(int j=0;j<vertext+1;j++)
+                    new_edges4[i][j]=alpha*(edges[i][j]-new_edges2[i][j])+(1-alpha)*(edges[i][j]-new_edges3[i][j]);
             }
             double[][] new_edges5=new double[vertext+1][vertext+1];
             copyEdges(new_edges4,new_edges5);
             double lamda=maxFlow(new_edges5,1,3);
-            if(Math.abs(lamda-a*max_flow)>DB_EPSLON)
-                throw new RuntimeException("error");
             DecimalFormat decimalFormat=new DecimalFormat("0.000000000");
             print(pipNum,v,outputstart,outputend,new_edges4,new_edges5,decimalFormat);
             System.out.println(decimalFormat.format(Math.pow(a*max_flow/v,a)*Math.pow((1-a)*max_flow,(1-a))));
