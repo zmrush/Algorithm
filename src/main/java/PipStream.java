@@ -4,10 +4,11 @@ import java.util.Scanner;
 
 public class PipStream {
     private static final double DB_EPSLON=0.00000001;
-    public static double maxFlow(double[][] edges,int source,int sink){
+    public static double maxFlow(double[][] edges,int source,int sink,double flowUpper){
         double flow=0.0;
         int[] level=new int[edges.length];
         LinkedList<Integer>[] onLevel=new LinkedList[edges.length];
+        boolean stopEarly=false;
         while(true){
             for(int i=0;i<level.length;i++) {
                 level[i] = -1;//initializing
@@ -40,7 +41,7 @@ public class PipStream {
                 if(from==sink){
                     Iterator<Integer> iter=dfsQueue.descendingIterator();
                     int last =iter.next();
-                    double mincapacity=Double.MAX_VALUE;
+                    double mincapacity=flowUpper;
                     int minLevel=Integer.MAX_VALUE;
                     while (iter.hasNext()) {
                         int next=iter.next();
@@ -66,6 +67,11 @@ public class PipStream {
                             iter.remove();
                         last=next;
                     }
+                    if(Math.abs(flowUpper-flow)<DB_EPSLON){
+                        stopEarly=true;
+                        break;
+                    }
+                    flowUpper-=mincapacity;
                 }else{
                     if(onLevel[from].size()<=0){
                         dfsQueue.pop();
@@ -77,6 +83,8 @@ public class PipStream {
                     }
                 }
             }
+            if(stopEarly)
+                break;
         }
         return flow;
     }
@@ -122,17 +130,17 @@ public class PipStream {
         copyEdges(edges,new_edges);
         new_edges[0][1]=Double.MAX_VALUE;
         new_edges[0][2]=Double.MAX_VALUE;
-        double max_flow= maxFlow(new_edges,0,3);
+        double max_flow= maxFlow(new_edges,0,3,Double.MAX_VALUE);
         //------------------------------------------------------------------------
         double[][] new_edges2=new double[vertext+1][vertext+1];
         copyEdges(edges,new_edges2);
-        double f_max_flow=maxFlow(new_edges2,1,3);
-        double lamda1=maxFlow(new_edges2,2,3);
+        double f_max_flow=maxFlow(new_edges2,1,3,Double.MAX_VALUE);
+        double lamda1=maxFlow(new_edges2,2,3,Double.MAX_VALUE);
         //------------------------------------------------------------------------
         double[][] new_edges3=new double[vertext+1][vertext+1];
         copyEdges(edges,new_edges3);
-        double w_max_flow=maxFlow(new_edges3,2,3);
-        double lamda2=maxFlow(new_edges3,1,3);
+        double w_max_flow=maxFlow(new_edges3,2,3,Double.MAX_VALUE);
+        double lamda2=maxFlow(new_edges3,1,3,Double.MAX_VALUE);
         //------------------------------------------------------------------------
         if(f_max_flow<=a*max_flow){//f max,direct ouput new_edges2
             double[][] new_edges4=new double[vertext+1][vertext+1];
@@ -148,7 +156,7 @@ public class PipStream {
             }
             double[][] new_edges5=new double[vertext+1][vertext+1];
             copyEdges(new_edges4,new_edges5);
-            maxFlow(new_edges5,1,3);
+            maxFlow(new_edges5,1,3,f_max_flow);
             print(pipNum,v,outputstart,outputend,new_edges4,new_edges5);
             System.out.println(Math.pow(f_max_flow/v,a)*Math.pow((max_flow-f_max_flow),(1-a)));
         }else if((w_max_flow<=(1-a)*max_flow)){//w max,direct output new_edges3
@@ -165,7 +173,7 @@ public class PipStream {
             }
             double[][] new_edges5=new double[vertext+1][vertext+1];
             copyEdges(new_edges4,new_edges5);
-            maxFlow(new_edges5,1,3);
+            maxFlow(new_edges5,1,3,(max_flow-w_max_flow));
             print(pipNum,v,outputstart,outputend,new_edges4,new_edges5);
             System.out.println(Math.pow((max_flow-w_max_flow)/v,a)*Math.pow((w_max_flow),(1-a)));
         }else{//mix
@@ -184,7 +192,7 @@ public class PipStream {
             }
             double[][] new_edges5=new double[vertext+1][vertext+1];
             copyEdges(new_edges4,new_edges5);
-            maxFlow(new_edges5,1,3);
+            double lamda=maxFlow(new_edges5,1,3,a*max_flow);
             print(pipNum,v,outputstart,outputend,new_edges4,new_edges5);
             System.out.println(Math.pow(a*max_flow/v,a)*Math.pow((1-a)*max_flow,(1-a)));
         }
