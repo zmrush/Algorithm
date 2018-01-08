@@ -6,6 +6,8 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
 import java.util.Stack;
 
 /**
@@ -87,12 +89,28 @@ public class AesSecurate {
         stack.push(1);
         stack.push(2);
         stack.push(3);
-        stack.push(4);
-        Iterator<Integer> iter=stack.iterator();
+        stack.push(5);
+        ListIterator<Integer> iter=stack.listIterator();
         while(iter.hasNext()){
             Integer i=iter.next();
-            if(i>3)
+            if(i==3)
+                iter.add(4);
+            if(i==5)
                 iter.remove();
+            if(i==2)
+                iter.set(1);
+        }
+        LinkedList<Integer> queue=new LinkedList<Integer>();
+        queue.add(1);queue.add(2);queue.add(3);queue.add(5);
+        ListIterator<Integer> iter2=queue.listIterator();
+        while(iter2.hasNext()){
+            Integer i=iter2.next();
+            if(i==3)
+                iter2.add(4);
+            if(i==5)
+                iter2.remove();
+            if(i==2)
+                iter2.set(1);
         }
         String path="push.html";
         String regex="push.*";

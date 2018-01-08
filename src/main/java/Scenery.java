@@ -205,6 +205,7 @@ public class Scenery {
         return true;
     }
     public static void main(String[] args){
+        String s;
         Scanner scanner=new Scanner(System.in);
         int numbers=scanner.nextInt();
         int length=scanner.nextInt();
