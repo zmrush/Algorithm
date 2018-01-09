@@ -1,3 +1,4 @@
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -16,6 +17,12 @@ public class AirportConstruction {
         public boolean equals(Point t){
             return this.x==t.x && this.y==t.y;
         }
+        public boolean isLeft(Point t){
+            return this.x<t.x || (this.x==t.x && this.y<=t.y);
+        }
+    }
+    public static double cosine(Point x_start,Point x_end,Point y_start,Point y_end){
+        return ((x_end.x-x_start.x)*(y_end.x-y_start.x)+(x_end.y-x_start.y)*(y_end.y-y_start.y))/(getLength(x_start,x_end)*getLength(y_start,y_end));
     }
     public static class Line{
         public Point start;
@@ -51,6 +58,100 @@ public class AirportConstruction {
     public static double getLength(Point x,Point y){
         return Math.sqrt((x.x-y.x)*(x.x-y.x)+(x.y-y.y)*(x.y-y.y));
     }
+
+
+    public static int startJudge(List<Point> points,int k,Line cur){
+        double lambda=cur.a*points.get(k).x+cur.b*points.get(k).y+cur.c;
+        if(cur.b<0 || (cur.b==0 || cur.a>0))
+            lambda=-lambda;
+        double lambda2=cur.a*points.get(k).x+cur.b*points.get(k).y+cur.c;
+        if(cur.b<0 || (cur.b==0 && cur.a>0))
+            lambda2=-lambda;
+        if(lambda>0){
+            if(lambda2<0)
+                return 1;//cross as boundry
+            if(lambda2==0){
+                if(cosine(cur.end,cur.start,points.get(k+1),points.get((k+2)%points.size()))==-1){
+                    return 1;
+                }
+                return 2;//success but cross not boundry
+            }
+            if(lambda2>0){
+                if(cosine(points.get(k),points.get(k+1),cur.end,cur.start)>cosine(points.get((k+2)%points.size()),points.get(k+1),cur.end,cur.start)){
+                    return 2;//no boundry
+                }else{
+                    return -1;//fail
+                }
+            }
+        }if(lambda<0){
+            if(lambda2>0)
+                return -1;
+            if(lambda2==0){
+                if(cosine(cur.end,cur.start,points.get(k+1),points.get((k+2)%points.size()))==1)
+                    return -1;//fail
+                return 2;//not boundry
+            }
+            else
+                if(cosine(points.get(k+1),points.get((k+2)%points.size()),cur.start,cur.end)>cosine(points.get(k+1),points.get(k),cur.start,cur.end))
+                    return 2;
+                return -1;
+        }else{
+            if(cosine(points.get(k),points.get(k+1),cur.end,cur.start)==1){
+                if(lambda2<0)
+                    return 1;//boundry
+                return 2;//no boundry
+            }else{
+                if(lambda2>0)
+                    return -1;
+                return 2;
+            }
+        }
+    }
+    public static int endJudge(List<Point> points,int k,Line cur) {
+        double lambda = cur.a * points.get(k).x + cur.b * points.get(k).y + cur.c;
+        if (cur.b < 0 || (cur.b == 0 || cur.a > 0))
+            lambda = -lambda;
+        double lambda2 = cur.a * points.get(k).x + cur.b * points.get(k).y + cur.c;
+        if (cur.b < 0 || (cur.b == 0 && cur.a > 0))
+            lambda2 = -lambda;
+        if(lambda>0){
+            if(lambda2<0)
+                return -1;
+            else if(lambda2==0){
+                if(cosine(cur.start,cur.end,points.get(k+1),points.get((k+2)%points.size()))==-1){
+                    return 1;
+                }
+                return -1;
+            }
+            else{
+                if(cosine(cur.end,cur.start,points.get(k+1),points.get((k+2)%points.size()))>cosine(cur.end,cur.start,points.get(k+1),points.get(k)))
+                    return 2;
+                return -1;
+            }
+        }else if(lambda<0){
+            if(lambda2>0)
+                return 1;//boundry
+            else if(lambda2==0){
+                if(cosine(cur.end,cur.start,points.get(k+1),points.get((k+2)%points.size()))==1)
+                    return 1;//boundry
+                return 2;//no boundry
+            }else{
+                if(cosine(cur.end,cur.start,points.get(k+1),points.get(k))>cosine(cur.end,cur.start,points.get(k+1),points.get((k+2)%points.size())))
+                    return 2;
+                return -1;
+            }
+        }else{
+            if(cosine(cur.start,cur.end,points.get(k+1),points.get(k))==1){
+                if(lambda2<0)
+                    return -1;
+                return 2;//no boundry
+            }else{
+                if(lambda2>0)
+                    return 1;// boundry
+                return 2;//no boundry
+            }
+        }
+    }
     public static double getDiameter(List<Point> points){
         double diameter=0.0;
         for(int i=0;i<points.size()-1;i++){
@@ -68,19 +169,22 @@ public class AirportConstruction {
                     try {
                          crossPoint= cross(cur, cross);
                     }catch (Exception e){
-                        crossPoint=points.get(k+1);
+                        if(cur.c*cross.a==cur.a*cross.c && cur.c*cross.b==cur.b*cross.c) // the same line
+                            crossPoint=points.get(k+1);
+                        else
+                            continue;
                     }
                     if(isOnLine(cross,crossPoint)){
                         if(isOnLine(cur,crossPoint)){
                             find=false; //intersect with the sea;
                             break;
                         }
-                        if(crossPoint.x>end.x || (crossPoint.x==end.x && crossPoint.y>=end.y)) {
-                            end = crossPoint;
+                        if(end.isLeft(crossPoint)){
+
                             if(cross_end==null){
                                 cross_end=crossPoint;
                             }else{
-                                if(cross_end.x>crossPoint.x || (cross_end.x==crossPoint.x && cross_end.y>=crossPoint.y))
+                                if(crossPoint.isLeft(cross_end))
                                     cross_end=crossPoint;
                             }
                         }
@@ -88,36 +192,103 @@ public class AirportConstruction {
                             if(cross_start==null)
                                 cross_start=crossPoint;
                             else{
-                                if(cross_start.x<crossPoint.x || (cross_start.x==crossPoint.x && cross_start.y<=crossPoint.y))
+                                if(cross_start.isLeft(crossPoint))
                                     cross_start=crossPoint;
                             }
                         }
                     }else if(crossPoint.equals(points.get(k+1))){
-                        if(crossPoint.equals(start) || crossPoint.equals(end)){//not end
-
+                        if(crossPoint.equals(start)){//
+                            int status=startJudge(points,k,cur);
+                            if(status<0){
+                                find=false;
+                                break;
+                            }else if(status==1){
+                                cross_start=crossPoint;
+                            }
+                        }else if(crossPoint.equals(end)){
+                            int status=endJudge(points,k,cur);
+                            if(status<0){
+                                find=false;
+                                break;
+                            }else if(status==1) {
+                                cross_end = crossPoint;
+                            }
                         }
-                        double lambda=cur.a*points.get(k).x+cur.b*points.get(k).y+cur.c;
-                        Point nextCross=points.get((k+2)%points.size());
-                        double lambda2=cur.a*nextCross.x+cur.b*nextCross.y+cur.c;
-                        if(lambda*lambda2<0){
-                            find=false;
-                            break;
-                        }
-                        else if(lambda2*lambda==0){
-                            if(lambda==0){
-                                Line nextLine=getLine(points.get(k+1),nextCross);
-                                double lambda3=nextLine.a*end.x+nextLine.b*end.y+nextLine.c;
-                                if(lambda3<0){
+                        else if(isOnLine(cur,crossPoint)){
+                            double lambda = cur.a * points.get(k).x + cur.b * points.get(k).y + cur.c;
+                            if (cur.b < 0 || (cur.b == 0 || cur.a > 0))
+                                lambda = -lambda;
+                            double lambda2 = cur.a * points.get(k).x + cur.b * points.get(k).y + cur.c;
+                            if (cur.b < 0 || (cur.b == 0 && cur.a > 0))
+                                lambda2 = -lambda;
+                            if(lambda>0){
+                                if(lambda2<0){
                                     find=false;
                                     break;
                                 }
-                            }else{
-                                double lambda3=cross.a*start.x+cross.b*start.y+cross.c;
-                                if(lambda3<0){
+                                else if(lambda2==0){
+                                    if(cosine(points.get(k+1),points.get((k+2)%points.size()),cur.start,cur.end)==1){
+                                        find=false;
+                                        break;
+                                    }
+                                }else{
+                                    if(cosine(cur.start,cur.end,points.get(k+1),points.get(k))<cosine(cur.start,cur.end,points.get(k+1),points.get((k+2)%points.size()))){
+                                        find=false;
+                                        break;
+                                    }
+                                }
+                            }else if(lambda==0){
+                                if(cosine(cur.start,cur.end,points.get(k),points.get(k+1))==1){
+                                    if(lambda2>0){
+                                        find=false;
+                                        break;
+                                    }
+                                }else{
+                                    if(lambda2>0){
+                                        find=false;
+                                        break;
+                                    }
+                                }
+                            }else{//<0
+                                if(lambda2>0){
                                     find=false;
                                     break;
+                                }else if(lambda2==0){
+                                    if(cosine(cur.end,cur.start,points.get(k+1),points.get((k+2)%points.size()))==1){
+                                        find=false;break;
+                                    }
+                                }else{
+                                    if(cosine(cur.start,cur.end,points.get(k+1),points.get(k))>cosine(cur.start,cur.end,points.get(k+1),points.get((k+2)%points.size()))){
+                                        find=false;break;
+                                    }
                                 }
                             }
+                        }
+                        else{//crosspoint is not on currrent line
+                            if(crossPoint.isLeft(start)){
+                                int status=startJudge(points,k,cur);
+                                if(status<0){
+                                    //find=false;break; //on this state,this may happen
+                                }else if(status==1){
+                                    if(cross_start==null){
+                                        cross_start=crossPoint;
+                                    }else if(cross_start.isLeft(crossPoint))
+                                        cross_start=crossPoint;
+                                }
+                            }
+                            if(end.isLeft(crossPoint)){
+                                int status=endJudge(points,k,cur);
+                                if(status<0){
+                                    //find=false;break;
+                                }else if(status==1) {
+                                    if (cross_end == null)
+                                        cross_end = crossPoint;
+                                    else if (crossPoint.isLeft(cross_end)) {
+                                        cross_end = crossPoint;
+                                    }
+                                }
+                            }
+
                         }
                     }else{//outside not consider
 
@@ -144,6 +315,7 @@ public class AirportConstruction {
             Point point=new Point(scanner.nextInt(),scanner.nextInt());
             points.add(point);
         }
-        System.out.println(getDiameter(points));
+        DecimalFormat decimalFormat=new DecimalFormat("0.00000000");
+        System.out.println(decimalFormat.format(getDiameter(points)));
     }
 }
