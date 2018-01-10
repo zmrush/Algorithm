@@ -6,7 +6,7 @@ import java.util.Scanner;
 /**
  * Created by mingzhu7 on 2018/1/8.
  */
-public class AirportConstruction {
+public class OldAirportConstruction {
     public static class Point{
         public double x;
         public double y;
@@ -59,19 +59,20 @@ public class AirportConstruction {
         return Math.sqrt((x.x-y.x)*(x.x-y.x)+(x.y-y.y)*(x.y-y.y));
     }
 
-
-    public static int startJudge(List<Point> points,int k,Line cur){
-        double lambda=cur.a*points.get(k).x+cur.b*points.get(k).y+cur.c;
-        if(cur.b<0 || (cur.b==0 || cur.a>0))
+    public static double getLambda(Line line,Point t){
+        double lambda=line.a*t.x+line.b*t.y+line.c;
+        if(line.b<0 || (line.b==0 && line.a>0))
             lambda=-lambda;
-        double lambda2=cur.a*points.get(k).x+cur.b*points.get(k).y+cur.c;
-        if(cur.b<0 || (cur.b==0 && cur.a>0))
-            lambda2=-lambda;
+        return lambda;
+    }
+    public static int startJudge(List<Point> points,int k,Line cur){
+        double lambda=getLambda(cur,points.get(k));
+        double lambda2=getLambda(cur,points.get((k+2)%points.size()));
         if(lambda>0){
             if(lambda2<0)
                 return 1;//cross as boundry
             if(lambda2==0){
-                if(cosine(cur.end,cur.start,points.get(k+1),points.get((k+2)%points.size()))==-1){
+                if(cosine(cur.end,cur.start,points.get(k+1),points.get((k+2)%points.size()))<0){//cosine -1
                     return 1;
                 }
                 return 2;//success but cross not boundry
@@ -87,16 +88,15 @@ public class AirportConstruction {
             if(lambda2>0)
                 return -1;
             if(lambda2==0){
-                if(cosine(cur.end,cur.start,points.get(k+1),points.get((k+2)%points.size()))==1)
+                if(cosine(cur.end,cur.start,points.get(k+1),points.get((k+2)%points.size()))>0)//cosine 1
                     return -1;//fail
-                return 2;//not boundry
+                return 2;// no boundry
             }
-            else
-                if(cosine(points.get(k+1),points.get((k+2)%points.size()),cur.start,cur.end)>cosine(points.get(k+1),points.get(k),cur.start,cur.end))
-                    return 2;
-                return -1;
+            else if(cosine(points.get(k+1),points.get((k+2)%points.size()),cur.start,cur.end)>cosine(points.get(k+1),points.get(k),cur.start,cur.end))
+                return 2;
+            return -1;
         }else{
-            if(cosine(points.get(k),points.get(k+1),cur.end,cur.start)==1){
+            if(cosine(points.get(k),points.get(k+1),cur.end,cur.start)>0){ //cosine 1
                 if(lambda2<0)
                     return 1;//boundry
                 return 2;//no boundry
@@ -108,17 +108,13 @@ public class AirportConstruction {
         }
     }
     public static int endJudge(List<Point> points,int k,Line cur) {
-        double lambda = cur.a * points.get(k).x + cur.b * points.get(k).y + cur.c;
-        if (cur.b < 0 || (cur.b == 0 || cur.a > 0))
-            lambda = -lambda;
-        double lambda2 = cur.a * points.get(k).x + cur.b * points.get(k).y + cur.c;
-        if (cur.b < 0 || (cur.b == 0 && cur.a > 0))
-            lambda2 = -lambda;
+        double lambda = getLambda(cur,points.get(k));
+        double lambda2 =getLambda(cur,points.get((k+2)%points.size()));
         if(lambda>0){
             if(lambda2<0)
                 return -1;
             else if(lambda2==0){
-                if(cosine(cur.start,cur.end,points.get(k+1),points.get((k+2)%points.size()))==-1){
+                if(cosine(cur.start,cur.end,points.get(k+1),points.get((k+2)%points.size()))<0){//cosine -1
                     return 1;
                 }
                 return -1;
@@ -132,7 +128,7 @@ public class AirportConstruction {
             if(lambda2>0)
                 return 1;//boundry
             else if(lambda2==0){
-                if(cosine(cur.end,cur.start,points.get(k+1),points.get((k+2)%points.size()))==1)
+                if(cosine(cur.end,cur.start,points.get(k+1),points.get((k+2)%points.size()))>0)//cosine 1
                     return 1;//boundry
                 return 2;//no boundry
             }else{
@@ -141,11 +137,11 @@ public class AirportConstruction {
                 return -1;
             }
         }else{
-            if(cosine(cur.start,cur.end,points.get(k+1),points.get(k))==1){
+            if(cosine(cur.start,cur.end,points.get(k+1),points.get(k))>0){//cosine 1
                 if(lambda2<0)
                     return -1;
                 return 2;//no boundry
-            }else{
+            }else{ //cosine -1
                 if(lambda2>0)
                     return 1;// boundry
                 return 2;//no boundry
@@ -167,7 +163,7 @@ public class AirportConstruction {
                     Line cross = getLine(points.get(k), points.get(k + 1));
                     Point crossPoint;
                     try {
-                         crossPoint= cross(cur, cross);
+                        crossPoint= cross(cur, cross);
                     }catch (Exception e){
                         if(cur.c*cross.a==cur.a*cross.c && cur.c*cross.b==cur.b*cross.c) // the same line
                             crossPoint=points.get(k+1);
@@ -215,19 +211,15 @@ public class AirportConstruction {
                             }
                         }
                         else if(isOnLine(cur,crossPoint)){
-                            double lambda = cur.a * points.get(k).x + cur.b * points.get(k).y + cur.c;
-                            if (cur.b < 0 || (cur.b == 0 || cur.a > 0))
-                                lambda = -lambda;
-                            double lambda2 = cur.a * points.get(k).x + cur.b * points.get(k).y + cur.c;
-                            if (cur.b < 0 || (cur.b == 0 && cur.a > 0))
-                                lambda2 = -lambda;
+                            double lambda = getLambda(cur,points.get(k));
+                            double lambda2 = getLambda(cur,points.get((k+2)%points.size()));
                             if(lambda>0){
                                 if(lambda2<0){
                                     find=false;
                                     break;
                                 }
                                 else if(lambda2==0){
-                                    if(cosine(points.get(k+1),points.get((k+2)%points.size()),cur.start,cur.end)==1){
+                                    if(cosine(points.get(k+1),points.get((k+2)%points.size()),cur.start,cur.end)>0){//cosine 1
                                         find=false;
                                         break;
                                     }
@@ -238,13 +230,17 @@ public class AirportConstruction {
                                     }
                                 }
                             }else if(lambda==0){
-                                if(cosine(cur.start,cur.end,points.get(k),points.get(k+1))==1){
+                                if(cosine(cur.start,cur.end,points.get(k),points.get(k+1))>0){//cosine 1
                                     if(lambda2>0){
                                         find=false;
                                         break;
                                     }
                                 }else{
-                                    if(lambda2>0){
+//                                    if(lambda2>0){
+//                                        find=false;
+//                                        break;
+//                                    }//well i think next is right
+                                    if(lambda2<0){
                                         find=false;
                                         break;
                                     }
@@ -254,17 +250,17 @@ public class AirportConstruction {
                                     find=false;
                                     break;
                                 }else if(lambda2==0){
-                                    if(cosine(cur.end,cur.start,points.get(k+1),points.get((k+2)%points.size()))==1){
+                                    if(cosine(cur.end,cur.start,points.get(k+1),points.get((k+2)%points.size()))>0){//cosine 1
                                         find=false;break;
                                     }
                                 }else{
                                     if(cosine(cur.start,cur.end,points.get(k+1),points.get(k))>cosine(cur.start,cur.end,points.get(k+1),points.get((k+2)%points.size()))){
                                         find=false;break;
-                                    }
+                                    }// well i think next is right
                                 }
                             }
                         }
-                        else{//crosspoint is not on currrent line
+                        else{//crosspoint is out of currrent line
                             if(crossPoint.isLeft(start)){
                                 int status=startJudge(points,k,cur);
                                 if(status<0){
@@ -308,6 +304,34 @@ public class AirportConstruction {
         return diameter;
     }
     public static void main(String[] args){
+//        Point start=new Point(0,0);
+//        Point end=new Point(10,15);
+//        Line line=getLine(start,end);
+//        System.out.println(start.isLeft(end));//true
+//        Point start1=new Point(4,9);
+//        Point end1=new Point(0,20);
+//        Line line1=getLine(start1,end1);
+//        System.out.println(start1.isLeft(end1));//false
+//        Point start2=new Point(0,0);
+//        Point end2=new Point(0,10);
+//        Line line3=getLine(start2,end2);
+//        System.out.println(start2.isLeft(end2));//true
+//        double cosine=cosine(new Point(0,0),new Point(10,0),new Point(0,0),new Point(5,5));//>
+//        cosine=cosine(new Point(0,0),new Point(10,0),new Point(0,0),new Point(0,10));//0
+//        cosine=cosine(new Point(0,0),new Point(10,0),new Point(0,0),new Point(-1,2));//<
+//        cosine=cosine(new Point(0,0),new Point(10,0),new Point(0,0),new Point(-2,0));//-1
+//        cosine=cosine(new Point(0,0),new Point(10,0),new Point(0,0),new Point(-2,-2));//<
+//        cosine=cosine(new Point(0,0),new Point(10,0),new Point(0,0),new Point(0,-2));//0
+//        cosine=cosine(new Point(0,0),new Point(10,0),new Point(0,0),new Point(2,-2));//>
+//        Point start=new Point(0,0);
+//        Point end=new Point(10,0);
+//        Line cur=getLine(start,end);
+//        Point point=new Point(5,0);//k+1
+//        Point point2=new Point(6,-2);//k
+//        Point point3=new Point(4,-2);//k+2
+//        System.out.println(cosine(cur.start,cur.end,point,point2));
+//        System.out.println(cosine(cur.start,cur.end,point,point3));
+
         Scanner scanner=new Scanner(System.in);
         int num=scanner.nextInt();
         List<Point> points=new ArrayList<Point>(num);
