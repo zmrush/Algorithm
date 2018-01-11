@@ -307,6 +307,12 @@ public class OldAirportConstruction {
         return diameter;
     }
     public static void main(String[] args){
+        double a=99999999999L;
+        double b=99999999998L;
+        double c=99999;
+        double z=b*c;
+        double t=a*c;
+        System.out.println(z>t);
 //        Point start=new Point(0,0);
 //        Point end=new Point(10,15);
 //        Line line=getLine(start,end);
