@@ -71,7 +71,7 @@ public class DefaultBlockingQueue {
             }
             Node tmp=head.next;
             head.next=tmp.next;
-            tmp.next=tmp;
+            tmp.next=tmp;//help gc
             lastsize=asize.getAndDecrement();
             if(lastsize-1>0){
                 takeCondition.signal();
