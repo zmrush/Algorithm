@@ -129,7 +129,8 @@ public class OldAirportConstruction {
                 return -1;
             else if(lambda2==0){
                 if(cosine(cur.start,cur.end,points.get((k+1)%N),points.get((k+2)%points.size()))<0){//cosine -1
-                    return 1;
+                    //return 1;
+                    return 2;//well the last line is wrong
                 }
                 return -1;
             }
@@ -322,6 +323,7 @@ public class OldAirportConstruction {
         }
         return diameter;
     }
+    //well last wrong is endjudge return 2 wrongly to return 1,and next last wrong is cross double may not be correct.
     public static void main(String[] args){
 //        double a=1000000000000000000L;
 //        double b=1000000000000000001L;
@@ -375,6 +377,18 @@ public class OldAirportConstruction {
 //        Point Q=new Point(20,10);
 //        double crossP=crossP(common_start,P,Q);
 //        System.out.println(crossP);
+
+
+//        long x1=1234500000000000001L;
+//        long x2=0;
+//        long x3=-1;
+//        long x4=2;
+//        long t=x3/x4;
+//        double c=(x1-x2)/(double)100000000000000L;
+//        double c2=((double)x1-(double)1234500000000000000L)/(double)100000000000000L;
+//        long x5=(-100001)/100000;
+//        long x6=(-99999)/100000;
+//        System.out.println(c==12345);
 
 
         Scanner scanner=new Scanner(System.in);
