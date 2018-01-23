@@ -59,6 +59,8 @@ public class BruteForceGetAClue {
             int playerindex=0;
             for(int i=0;i<roundtest.size();i++){
                 for(int j=1;j<roundtest.get(i).size();j++){
+                    //i have two problem,one is i first thought last one is must be * or alphabet,but it may be -,another one is that
+                    // roundtest.get(i).get(j) is alphabet,but i thought it is number,so i need to transform it firstly.
                     if((byte)(roundtest.get(i).get(j))=='*'){
                         if((((int)roundtest.get(i).get(0))&(player[(playerindex+j)%4]))==0)
                             return false;
