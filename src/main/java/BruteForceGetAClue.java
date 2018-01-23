@@ -58,24 +58,22 @@ public class BruteForceGetAClue {
             player[3]=mask;
             int playerindex=0;
             for(int i=0;i<roundtest.size();i++){
-                for(int j=0;j<roundtest.get(i).size();j++){
-                    if(j!=(roundtest.get(i).size()-1)){
-                        if((((int)roundtest.get(i).get(0))&(player[(playerindex+1+j)%4]))!=0)
+                for(int j=1;j<roundtest.get(i).size();j++){
+                    if((byte)(roundtest.get(i).get(j))=='*'){
+                        if((((int)roundtest.get(i).get(0))&(player[(playerindex+j)%4]))==0)
+                            return false;
+                    }else if((byte)(roundtest.get(i).get(j))=='-') {
+                        if((((int)roundtest.get(i).get(0))&(player[(playerindex+j)%4]))!=0)
                             return false;
                     }else{
-                        if((byte)(roundtest.get(i).get(j))=='*'){
-                            if((((int)roundtest.get(i).get(0))&(player[(playerindex+1+j)%4]))==0)
-                                return false;
-                            else{
-                                if((((int)roundtest.get(i).get(0))&(player[(playerindex+1+j)%4])&((byte)(roundtest.get(i).get(j))))!=((byte)(roundtest.get(i).get(j))))
-                                    return false;
-                            }
-                        }
+                        if((((int)roundtest.get(i).get(0))&(player[(playerindex+j)%4])&(1<<((byte)(roundtest.get(i).get(j))-'A')))!=(1<<((byte)(roundtest.get(i).get(j))-'A')))
+                            return false;
                     }
+
                 }
                 playerindex=(playerindex+1)%4;
             }
-            results.add(rival);
+            results.set(0,results.get(0)|rival);
             return true;
         }
 
@@ -113,7 +111,6 @@ public class BruteForceGetAClue {
         bitSet.set(first[3].getBytes()[0]-'A');
         bitSet.set(first[4].getBytes()[0]-'A');
         List<ArrayList<Object>> roundtest=new ArrayList<ArrayList<Object>>(rounds);
-        List<Integer> results=new ArrayList<Integer>();
         for(int i=0;i<rounds;i++){
             String line=scanner.nextLine();
             String[] chars=line.split(" ");
@@ -124,11 +121,10 @@ public class BruteForceGetAClue {
             }
             roundtest.add(arrayList);
         }
+        List<Integer> results=new ArrayList<Integer>();
+        results.add(0);
         testrival(roundtest,results,player1,bitSet);
-        int result=0;
-        for(int i=0;i<results.size();i++){
-            result|=results.get(i);
-        }
+        int result=results.get(0);
         StringBuilder sb=new StringBuilder();
         int murder=result&((1<<6)-1);
         if(getOnesNum(murder)>1)
