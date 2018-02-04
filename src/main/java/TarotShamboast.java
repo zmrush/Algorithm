@@ -21,6 +21,33 @@ public class TarotShamboast {
         }
         return res;
     }
+    public static int[] kmp(char[] buf){
+        int[] kmp=new int[buf.length];
+        kmp[0]=-1;
+        for(int i=1;i<buf.length;i++){
+            int index=i-1;
+            while(index>=0 && buf[kmp[index]+1]!=buf[i])
+                index=kmp[index];
+            if(index<0)
+                kmp[i]=-1;
+            else
+                kmp[i]=kmp[index]+1;
+        }
+        return kmp;
+    }
+    public static List<Integer> kms2(char[] buf,int n){
+        List<Integer> arr=new ArrayList<Integer>();
+        int[] kmp=kmp(buf);
+        int length=buf.length;
+        int i= length-1;
+        while(i>=0){
+            if(kmp[i]>=0 && kmp[i]>=(2*length-1-n)){
+                arr.add(length-kmp[i]-1);
+            }
+            i=kmp[i];
+        }
+        return arr;
+    }
     public static void main(String[] args){
         Scanner scanner=new Scanner(System.in);
         int n=scanner.nextInt();
@@ -33,7 +60,7 @@ public class TarotShamboast {
             char[] buf=new char[tmp.length()];
             tmp.getChars(0,tmp.length(),buf,0);
             list.add(buf);
-            kmps.add(kms(buf,n));
+            kmps.add(kms2(buf,n));
         }
         //bubble sort
         for(int i=0;i<(list.size()-1);i++){
