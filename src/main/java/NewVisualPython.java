@@ -71,9 +71,9 @@ public class NewVisualPython {
                     }
                     continue;
                 }
-                Map.Entry<Integer, TreeMap<Integer, Integer>> candicates = nm.lowerEntry(rowEntry.getKey());
-                //well following last two judge is quite important
-                if (candicates == null || candicates.getValue().size() > 1 || candicates.getValue().firstKey()>=endX || nm.get(rowEntry.getKey())!=null) {
+                Map.Entry<Integer, TreeMap<Integer, Integer>> candicates = nm.floorEntry(rowEntry.getKey());
+                //well we should use floorentry
+                if (candicates == null || candicates.getValue().size() > 1) {
                     success = false;
                     break;
                 }
