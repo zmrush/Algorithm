@@ -1,3 +1,6 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -17,14 +20,18 @@ public class NewVisualPython {
         public int compare(Position o1, Position o2) {
             if(o1.x>o2.y)
                 return 1;
-            else if(o1.x>=o2.x && o1.y<=o2.y)
-                return 0;
-            else
+            else if(o1.y<o2.x)
                 return -1;
+            else
+                return 0;
         }
     }
-    public static void main(String[] args){
+    //we have two things that is very important,one is that nm floorentry,the other is PositionComparetor because [1498,1499] may be smaller
+    //than [1498,1498] if we use old write,but with new write,we can ensure first and last exists;
+    public static void main(String[] args) throws FileNotFoundException {
         TreeMap<Integer,TreeMap<Integer,Integer>> total=new TreeMap<>();
+//        FileInputStream fileInputStream=new FileInputStream("D:\\chrome\\download\\icpc2017data\\icpc2017data\\L-visual\\secret-061-tree.in");
+//        Scanner scanner=new Scanner(fileInputStream);
         Scanner scanner=new Scanner(System.in);
         int n=scanner.nextInt();
         int[] results=new int[n];
@@ -106,6 +113,7 @@ public class NewVisualPython {
                     }
                     Map.Entry<Position, Integer> firstEntry = navigableMap1.firstEntry();
                     navigableMap1.clear();
+                    alreayExists.put(new Position(curY, endY), endX);
                     if (endY<lastPosition.y) {
                         alreayExists.put(new Position(endY+1, lastPosition.y), lastX);
                     }
@@ -116,7 +124,6 @@ public class NewVisualPython {
                             alreayExists.put(new Position(firstPosition.x, curY-1), firstX);
                         }
                     }
-                    alreayExists.put(new Position(curY, endY), endX);
                 }
                 //--------------------------------------------------------------------------------------
                 results[cursor] = result;
